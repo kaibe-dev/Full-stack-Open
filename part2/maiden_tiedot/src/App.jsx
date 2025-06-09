@@ -8,8 +8,6 @@ const App = () => {
   const [countries, setCountries] = useState([])
   const [filter, setFilter] = useState('')
   
-
-
   useEffect(() => {
     countryService
       .getAllNames()
