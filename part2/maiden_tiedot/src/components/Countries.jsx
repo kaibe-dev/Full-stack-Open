@@ -1,6 +1,6 @@
 import CountryInfo from "./CountryInfo"
 
-const Countries = ({ countries }) => {
+const Countries = ({ countries, onCountrySelect }) => {
   if (countries.length > 10) {
     return <div>Too many matches, be more specific</div>
   } 
@@ -13,6 +13,7 @@ const Countries = ({ countries }) => {
         {countries.map((country) =>
         <div key={country.name.common}> 
           {country.name.common} 
+          <button onClick={() => onCountrySelect(country)}>Show</button>
         </div>
         )}  
       </div>

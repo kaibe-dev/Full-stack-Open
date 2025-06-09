@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import Countries from './components/Countries'
+import Countries from "./components/Countries"
 import Filter from './components/Filter'
 import countryService from './services/countries'
 
@@ -7,6 +7,7 @@ const App = () => {
 
   const [countries, setCountries] = useState([])
   const [filter, setFilter] = useState('')
+  
 
 
   useEffect(() => {
@@ -25,13 +26,20 @@ const App = () => {
     country.name.common.toLowerCase().includes(filter.toLowerCase())
   )  
 
+  const handleCountrySelection = (country) => {
+    setFilter(country.name.common)
+  }
+
 
   return (
     <div>
         <h1>Find Countries</h1>
         <Filter filter={filter} handler={handleFilterChange} />
         <br />
-        <Countries countries={filteredCountries} />
+        <Countries 
+          countries={filteredCountries}
+          onCountrySelect={handleCountrySelection} 
+        />
     </div>
   )
 }
