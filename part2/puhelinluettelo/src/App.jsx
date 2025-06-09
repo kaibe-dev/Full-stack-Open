@@ -19,19 +19,23 @@ const App = () => {
       })
   }, [])
 
-  const addName = (Event) => {
+  const addPerson = (Event) => {
     Event.preventDefault()
-    const nameObject = {
+    const personObject = {
       name: newName,
       number: newNumber,
-      id: (persons.length + 1)
     }
-    
+
     if (persons.some(person => person.name === newName)) {
       alert(`${newName} is already added to the phonebook`)
       
     } else {
-      setPersons(persons.concat(nameObject))
+      axios
+        .post('http://localhost:3001/persons', personObject)
+        .then(Response => {
+          console.log(Response)
+          setPersons(persons.concat(Response.data))
+        })
     }
 
     setNewName('')
@@ -65,7 +69,7 @@ const App = () => {
         nameHandler={handleNameChange}
         number={newNumber}
         numberHandler={handleNumberChange}
-        submit={addName}
+        submit={addPerson}
       />
       <h2>Numbers</h2>
       <Persons filteredPersons={filteredPersons} />
