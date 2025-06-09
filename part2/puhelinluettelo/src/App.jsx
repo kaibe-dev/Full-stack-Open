@@ -48,6 +48,16 @@ const App = () => {
               setSuccessMessage(null)
             }, 5000)
           })
+          .catch((error) => {
+            console.log(error)
+            setErrorMessage(
+              `Information of ${foundPerson.name} has already been removed from the server`
+            )
+            setPersons(persons.filter(person => person.id !== foundPerson.id))
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+          })
       }
     } else {
       personService
