@@ -24,6 +24,15 @@ let persons = [
     }
 ]
 
+
+app.get('/info', (request, response) => {
+    console.log(Date.now())
+    response.send(`
+        <p>Phonebook has info for ${persons.length} people</p>
+        <p>${new Date().toTimeString()}</p>
+        `)
+})
+
 app.get('/', (request, response) => {
     response.send('<h1>Hello World</h1>')
 })
