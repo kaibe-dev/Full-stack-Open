@@ -40,6 +40,19 @@ app.get('/api/persons', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
     const person = req.body
+    
+    if (!person.name || !person.number) {
+        return res.status(400).json({
+            error: 'Required fields missing'
+        })
+    }
+
+    if (persons.find(existingPerson => existingPerson.name === person.name)) {
+        return res.status(400).json({
+            error: 'Name must be unique'
+        })
+    }
+    
     person.id = String(Math.floor(Math.random() * 400))
     persons = persons.concat(person)
     res.json(person)
