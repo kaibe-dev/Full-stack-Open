@@ -5,6 +5,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+app.use(express.static('dist'))
 
 morgan.token('content', (req, res) =>{
     if (req.method === 'POST' && req.body.name && req.body.number ) {
