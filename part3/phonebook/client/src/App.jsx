@@ -47,15 +47,18 @@ const App = () => {
               setNotification(null)
             }, 5000)
           })
-          .catch((error) => {
-            console.log(error)
-            setNotification(
-              `ERROR: Information of ${foundPerson.name} has already been removed from the server`
-            )
-            setPersons(persons.filter(person => person.id !== foundPerson.id))
+          .catch(error => {
+            if (error.status === 404) {
+              setPersons(persons.filter(person => person.id !== foundPerson.id))
+            }
+            setNotification(`
+              ERROR: ${error.response.data.error}
+            `)
             setTimeout(() => {
               setNotification(null)
             }, 5000)
+            console.log(error.response.data.error)
+
           })
       }
     } else {
@@ -69,6 +72,16 @@ const App = () => {
           setTimeout(() => {
             setNotification(null)
           }, 5000)
+        })
+        .catch(error => {
+          setNotification(`
+            ERROR: ${error.response.data.error}
+          `)
+          setTimeout(() => {
+            setNotification(null)
+          }, 5000)
+          console.log(error.response.data)
+
         })
     }
 
