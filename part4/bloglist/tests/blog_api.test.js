@@ -97,6 +97,68 @@ describe('api tests', () => {
       .send(newBlog)
       .expect(400)
   })  
+
+  test('delete blog with valid id', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const idToDelete = blogsAtStart[0].id
+    await api
+      .delete(`/api/blogs/${idToDelete}`)
+      .expect(204)
+  })
+
+  test('trying to delete a blog with malformatted id', async () => {
+    const idToDelete = "5a422b991b54a7764d17fa"
+    await api
+      .delete(`/api/blogs/${idToDelete}`)
+      .expect(400)
+  })
+
+  test('trying to delete a blog with id that does not exist', async () => {
+    const idToDelete = "5a422b891b54a676234dffff"
+    await api
+      .delete(`/api/blogs/${idToDelete}`)
+      .expect(404)
+  })  
+
+  test('update blog with valid data', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const idToUpdate = blogsAtStart[0].id
+    const updatedContents = {
+      title: "updated title",
+      author: "updated author",
+      url: "updated url",
+      likes: 99
+    }
+
+    await api
+      .put(`/api/blogs/${idToUpdate}`)
+      .send(updatedContents)
+      .expect(200)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const updatedBlog = blogsAtEnd.find(blog => blog.id === idToUpdate)
+    assert.strictEqual(updatedBlog.likes, updatedContents.likes)    
+  })
+
+    test('update blog with invalid data', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const originalBlog = blogsAtStart[0]
+    const idToUpdate = originalBlog.id
+    const updatedContents = {
+      author: "updated author",
+      url: "updated url",
+      likes: 99
+    }
+
+    await api
+      .put(`/api/blogs/${idToUpdate}`)
+      .send(updatedContents)
+      .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    const updatedBlog = blogsAtEnd.find(blog => blog.id === idToUpdate)
+    assert.strictEqual(updatedBlog.likes, originalBlog.likes)    
+  })
 })
 
 after(async () => {
