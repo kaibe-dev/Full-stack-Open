@@ -56,7 +56,7 @@ describe('when there is initially one user at db', () => {
 
     const usersAtEnd = await helper.usersInDb()
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
-  })  
+  })
 
   test('creation fails with missing username', async () => {
     const usersAtStart = await helper.usersInDb()
