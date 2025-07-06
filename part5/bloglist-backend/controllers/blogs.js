@@ -1,5 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const { userExtractor } = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
@@ -26,7 +27,7 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
 })
 
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
-  const user = request.user
+  const user = await User.findOne(request.user)
 
   const blogToDelete = await Blog.findById(request.params.id)
   if (!blogToDelete) {
@@ -37,20 +38,28 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
     return response.status(401).json({ error: 'unauthrorized' })
   }
 
+  user.blogs.pull(blogToDelete._id)
+  await user.save()
   await blogToDelete.deleteOne()
   response.status(204).end()
 })
 
 blogsRouter.put('/:id', async (request, response) => {
   const foundBlog = await Blog.findById(request.params.id)
-  const body = request.body
+  console.log('found blog: ', foundBlog)
+  
+  if (!foundBlog) {
+    return response.status(404).json({ error: 'blog not found'})
+  }
 
+  const body = request.body
+  
   foundBlog.title = body.title
   foundBlog.author = body.author
   foundBlog.url = body.url
   foundBlog.likes = body.likes
 
-  updatedBlog = await foundBlog.save()
+  const updatedBlog = await foundBlog.save()
   response.json(updatedBlog)
 })
 

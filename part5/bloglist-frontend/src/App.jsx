@@ -6,6 +6,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import axios from 'axios'
 
 const App = () => {
   const [notification, setNotification] = useState(null)
@@ -18,8 +19,8 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+      setBlogs( blogs ),
+    )
   }, [])
 
   useEffect(() => {
@@ -84,11 +85,37 @@ const App = () => {
       }, 5000)
 
     } catch (error) {
+      console.log(error.response)
+      const errorMessage = error.response.data.error
+      const errorCode = error.response.status
+
+      if (errorMessage === 'token expired') {
+        setNotification('ERROR: Session expired, please log in again')
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+        window.localStorage.removeItem('loggedBloglistUser')
+        setUser(null)
+      } else if (errorCode === 401) {
+        setNotification('ERROR: Invalid token')
+        setTimeout(() => {
+          setNotification(null)
+        }, 5000)
+        window.localStorage.removeItem('loggedBloglistUser')
+        setUser(null)
+      }
+    }
+  }
+
+  const deleteBlog = async (id) => {
+    try {
+      const blogToDelete = blogs.find((blog) => blog.id === id)
+      if (window.confirm(`Remove blog ${blogToDelete.title} by ${blogToDelete.author}`)) {
+        setBlogs(blogs.filter(blog => blog.id !== id))
+        await blogService.remove(id)
+      }
+    } catch (error) {
       console.log(error)
-      setNotification('ERROR: Missing required fields')
-      setTimeout(() => {
-        setNotification(null)
-      }, 5000)
     }
   }
 
@@ -96,6 +123,7 @@ const App = () => {
     return (
       <div>
         <Notification message={notification} />
+        <h1>Bloglist</h1>
         <Togglable buttonLabel='login'>
           <LoginForm
             username={username}
@@ -116,9 +144,9 @@ const App = () => {
       <p>Logged in as {user.name}</p>
       <button onClick={handleLogout}>logout</button>
       <Togglable buttonLabel='new blog' ref={blogFormRef}>
-        <BlogForm createBlog={addBlog} />
+        <BlogForm createBlog={addBlog} user={user}/>
       </Togglable>
-      <Blogs blogs={blogs}/>
+      <Blogs blogs={blogs} user={user} deleteBlog={deleteBlog} />
     </div>
   )
 }

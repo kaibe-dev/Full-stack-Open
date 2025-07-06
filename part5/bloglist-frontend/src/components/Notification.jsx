@@ -3,7 +3,7 @@ const Notification =({ message }) => {
     return null
   }
 
-  if (message.includes("ERROR")) {
+  if (message.includes('ERROR')) {
     return (
       <div className="error">
         {message}
