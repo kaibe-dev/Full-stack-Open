@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
 
-const Blog = ({ blog, user, deleteBlog }) => {
+const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -15,13 +14,11 @@ const Blog = ({ blog, user, deleteBlog }) => {
 
   const showRemoveButton = user.username === blog.user.username
 
-  const addLike = async () => {
+  const addLike = () => {
     try {
       setLikes(likes + 1)
       const updatedBlog = { ...blog, likes: likes + 1 }
-      const idToUpdate = blog.id
-      const result = await blogService.update(idToUpdate, updatedBlog)
-      console.log(result)
+      updateBlog(updatedBlog)
     } catch (error) {
       console.log(error)
     }
@@ -39,7 +36,7 @@ const Blog = ({ blog, user, deleteBlog }) => {
   if (isActive === false) {
     return (
       <div style={blogStyle}>
-        {blog.title}
+        {blog.title} {blog.author}
         <button onClick={() => toggleVisibility()}>view</button>
       </div>
     )
@@ -47,12 +44,12 @@ const Blog = ({ blog, user, deleteBlog }) => {
 
   return (
     <div style={blogStyle}>
-      {blog.title}
-      <button onClick={() => toggleVisibility()}>hide</button> <br />
-      {blog.url} <br />
+      {blog.title} {blog.author}
+      <button onClick={() => toggleVisibility()}>hide</button><br />
+      {blog.url}<br />
       likes {likes}
-      <button onClick={() => addLike()}>like</button> <br />
-      {blog.user.name} <br />
+      <button onClick={() => addLike()}>like</button><br />
+      {blog.user.name}<br />
       {showRemoveButton && <button onClick={() => removeSelf()}>remove</button> }
     </div>
   )

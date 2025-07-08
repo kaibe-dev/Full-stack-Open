@@ -107,6 +107,15 @@ const App = () => {
     }
   }
 
+  const updateBlog = async (updatedBlog) => {
+    try {
+      const idToUpdate = updatedBlog.id
+      await blogService.update(idToUpdate, updatedBlog)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const deleteBlog = async (id) => {
     try {
       const blogToDelete = blogs.find((blog) => blog.id === id)
@@ -146,7 +155,11 @@ const App = () => {
       <Togglable buttonLabel='new blog' ref={blogFormRef}>
         <BlogForm createBlog={addBlog} user={user}/>
       </Togglable>
-      <Blogs blogs={blogs} user={user} deleteBlog={deleteBlog} />
+      <Blogs
+        blogs={blogs}
+        user={user}
+        updateBlog={updateBlog}
+        deleteBlog={deleteBlog} />
     </div>
   )
 }
