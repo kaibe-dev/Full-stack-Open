@@ -110,6 +110,7 @@ const App = () => {
   const updateBlog = async (updatedBlog) => {
     try {
       const idToUpdate = updatedBlog.id
+      setBlogs(blogs.map(blog => blog.id === idToUpdate ? updatedBlog : blog))
       await blogService.update(idToUpdate, updatedBlog)
     } catch (error) {
       console.log(error)

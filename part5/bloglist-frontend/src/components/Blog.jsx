@@ -10,14 +10,12 @@ const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
   }
 
   const [isActive, setIsActive] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
 
   const showRemoveButton = user.username === blog.user.username
 
   const addLike = () => {
     try {
-      setLikes(likes + 1)
-      const updatedBlog = { ...blog, likes: likes + 1 }
+      const updatedBlog = { ...blog, likes: blog.likes + 1 }
       updateBlog(updatedBlog)
     } catch (error) {
       console.log(error)
@@ -47,7 +45,7 @@ const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
       {blog.title} {blog.author}
       <button onClick={() => toggleVisibility()}>hide</button><br />
       {blog.url}<br />
-      likes {likes}
+      likes {blog.likes}
       <button onClick={() => addLike()}>like</button><br />
       {blog.user.name}<br />
       {showRemoveButton && <button onClick={() => removeSelf()}>remove</button> }

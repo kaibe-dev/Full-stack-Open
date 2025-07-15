@@ -4,7 +4,7 @@ const Blogs = ({ blogs, user, updateBlog, deleteBlog }) => {
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   return (
-    <div>
+    <div data-testid='allblogs'>
       <h2>Blogs</h2>
       {sortedBlogs.map(blog =>
         <Blog key={blog.id}
