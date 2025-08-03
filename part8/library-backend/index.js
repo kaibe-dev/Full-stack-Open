@@ -252,7 +252,7 @@ const resolvers = {
       return updatedAuthor
     },
     createUser: async (root, args) => {
-      const user = new User({ username: args.username, favouriteGenre: args.favoriteGenre })
+      const user = new User({ username: args.username, favoriteGenre: args.favoriteGenre })
       
       return user.save()
         .catch (error => {
