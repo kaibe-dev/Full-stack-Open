@@ -12,7 +12,7 @@ const Recommendations = (props) => {
   })
 
   useEffect(() => {
-    if (!userResult.loading) {
+    if (!userResult.loading && userResult.data.me) {
       const favGenre = userResult.data.me.favoriteGenre
       setFavoriteGenre(favGenre)
     }
@@ -25,8 +25,8 @@ const Recommendations = (props) => {
   if (userResult.loading || booksResult.loading) {
     return <div>loading...</div>
   }
-  console.log(userResult)
-  const recommendedBooks = booksResult.data.allBooks || []
+  
+  const recommendedBooks = booksResult.data?.allBooks || []
 
   return (
     <div>

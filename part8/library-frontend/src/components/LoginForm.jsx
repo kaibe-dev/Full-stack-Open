@@ -26,7 +26,7 @@ const LoginForm = ({ show, setToken, }) => {
 	const submit = (event) => {
 		event.preventDefault()
 		login({ variables: { username, password } })
-    client.clearStore()
+
 	}
 
 	if (!show) {

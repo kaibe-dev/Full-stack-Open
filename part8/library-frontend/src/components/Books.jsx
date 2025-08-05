@@ -1,40 +1,40 @@
-import { useQuery } from '@apollo/client'
+import { useLazyQuery, useQuery } from '@apollo/client'
 import { ALL_BOOKS } from '../queries'
 import { useEffect, useState } from 'react'
 
 const Books = (props) => {
   const allBooksResult = useQuery(ALL_BOOKS)
-  const [genres, setGenres] = useState('')
-  const [filter, setFilter] = useState('')
-  const filteredBooksResult = useQuery(ALL_BOOKS, {
-    variables: filter ? { genre: filter } : {}
-  })
+  const [getFilteredBooks, filteredBooksResult] = useLazyQuery(ALL_BOOKS)
+  const [genres, setGenres] = useState([])
+  const [selectedGenre, setSelectedGenre] = useState(null)
 
   useEffect(() => {
     if (!allBooksResult.loading) {
-      const bookData = allBooksResult.data.allBooks
-      const genreData = [...new Set(bookData.flatMap(book => book.genres))]
+      const genreData = [...new Set(allBooksResult.data.allBooks.flatMap(book => book.genres))]
       setGenres(genreData)
     }
-  }, [allBooksResult])
+  }, [allBooksResult.data, allBooksResult.loading])
 
-  const handleFilterChange = async (filter) => {
-    setFilter(filter)
+  const handleFilterChange = (filter) => {
+    setSelectedGenre(filter)
+    getFilteredBooks({ variables: { genre: filter } })
   }
 
   const resetFilter = async () => {
-    setFilter('')
+    setSelectedGenre(null)
   }
   
   if (!props.show) {
     return null
   }
   
-  if (filteredBooksResult.loading) {
+  if (filteredBooksResult.loading || allBooksResult.loading) {
     return <div>loading...</div>
   }
 
-  const books = filteredBooksResult.data.allBooks || []
+  const books = selectedGenre && filteredBooksResult.data 
+    ? filteredBooksResult.data.allBooks 
+    : allBooksResult.data.allBooks
 
   return (
     <div>

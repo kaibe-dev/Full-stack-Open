@@ -3,15 +3,23 @@ import Select from 'react-select'
 import { useMutation, useQuery } from '@apollo/client'
 import { ALL_AUTHORS, EDIT_BIRTHYEAR } from '../queries'
 import PropTypes from 'prop-types'
+import { useEffect } from 'react'
 
 const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS)
+  const [authors, setAuthors] = useState([])
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
   const [ editBirthyear ] = useMutation(EDIT_BIRTHYEAR, {
     refetchQueries: [ { query: ALL_AUTHORS } ]
   })
+
+  useEffect(() => {
+    if (!result.loading && result.data) {
+      setAuthors(result.data.allAuthors)
+    }
+  }, [result.data, result.loading])
 
   const submit = async (event) => {
     event.preventDefault()
@@ -30,8 +38,6 @@ const Authors = (props) => {
     return <div>loading...</div>
   }
   
-  const authors = result.data.allAuthors
-
   const authorOptions = authors.map(author => ({
     value: author.name,
     label: author.name
