@@ -1,13 +1,13 @@
 import { useState } from 'react'
-import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
-import { setNotification } from '../reducers/notificationReducer'
+import { useSelector } from 'react-redux'
 
-const BlogForm = ({ user, handleSuccess }) => {
+const BlogForm = ({ handleSuccess }) => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
+  const user = useSelector(({ user }) => user)
   const dispatch = useDispatch()
 
   const addBlog = async (Event) => {
@@ -67,10 +67,6 @@ const BlogForm = ({ user, handleSuccess }) => {
       </form>
     </div>
   )
-}
-
-BlogForm.propTypes = {
-  user: PropTypes.object.isRequired,
 }
 
 export default BlogForm

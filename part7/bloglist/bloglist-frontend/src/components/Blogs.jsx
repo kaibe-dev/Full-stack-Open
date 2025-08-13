@@ -1,16 +1,21 @@
-import Blog from './Blog'
-import { useSelector } from 'react-redux'
+import { useRef } from 'react'
+import BlogList from './BlogList'
+import Togglable from './Togglable'
+import BlogForm from './BlogForm'
 
-const Blogs = ({ user }) => {
-  const blogs = useSelector(({ blogs }) => blogs)
-  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
+const Blogs = () => {
+  const blogFormRef = useRef()
+
+  const toggleVisibility = () => {
+    blogFormRef.current.toggleVisibility()
+  }
 
   return (
-    <div data-testid="allblogs">
-      <h2>Blogs</h2>
-      {sortedBlogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} user={user} />
-      ))}
+    <div>
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <BlogForm handleSuccess={toggleVisibility} />
+      </Togglable>
+      <BlogList />
     </div>
   )
 }
